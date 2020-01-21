@@ -1,0 +1,59 @@
+Следует учесть, что как только введен компьютер в домен (фаер опущен), можно
+все команды вводить с удаленного компьютера, использую команду подключения
+
+enter-pssession <имя компьютера>
+
+Так же до ввода в домен, после настройки сети можно разрешить удаленный доступ с помощью команды
+
+enable-psremoting
+
+Разрешить выполнять ps скрипты
+
+Set-ExecutionPolicy remotesigned
+
+
+0. Установка vmware tools
+cd d:
+setup.exe
+
+1. Сеть
+
+Текущие настройки. Определить индекс интерфейса
+Get-NetIPConfiguration
+
+Адрес, шлюз, маска (разряд)
+New-NetIPAddress –InterfaceIndex 12 –IPAddress 192.168.0.1 -PrefixLength 24 -DefaultGateway 192.168.0.5
+
+DNS
+Set-DnsClientServerAddress -InterfaceIndex 12 -ServerAddresses ("192.168.0.1","192.168.0.2")
+
+
+
+2. Ввод в домен
+
+Изменение имени компьютера
+Rename-Computer -NewName "test" -restart
+
+Ввод в домен
+add-computer -domain domain.local -credential domain\user -restart
+
+3. Временная зона
+tzutil /s "Russian Standard Time"
+
+4.Открыть rdp
+cscript C:\windows\system32\scregedit.wsf /ar 0
+
+5. Активация
+
+прокся
+netsh winhttp set proxy b000168.zaoeps.local:3128
+
+активация
+cscript "c:\windows\system32\slmgr.vbs" /ato
+
+6. Язык и региональные настройки
+Региональные настройки
+control intl.cpl
+
+Смена раскладки
+"C:\Windows\system32\rundll32.exe" Shell32.dll,Control_RunDLL input.dll,,{C07337D3-DB2C-4D0B-9A93-B722A6C106E2}

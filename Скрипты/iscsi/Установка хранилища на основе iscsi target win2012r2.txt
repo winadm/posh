@@ -1,0 +1,24 @@
+1.Запускаем службу iscsi инициатора и ставим ее в автоматический запуск
+
+Start-Service msiscsi
+
+Set-Service msiscsi -startuptype "automatic"
+
+2. Установка iscsi target роли
+
+Install-WindowsFeature -Name FS-iSCSITarget-Server
+
+3. Создание виртуального диска, который будет раздаваться по iscsi
+
+New-IscsiVirtualDisk -Path C:\iSCSIVirtualDisks\vdisk2.vhd -Size 500GB
+
+4. Создаем таргет
+
+New-IscsiServerTarget test -InitiatorIds "IQN:...."
+
+5. Мапим виртуальных диск к таргету
+
+Add-IscsiVirtualDiskTargetMapping -TargetName test -path C:\iSCSIVirtualDisks\vdisk2.vhdx
+
+6. Добавление инициатора
+Set-IscsiServerTarget -TargetName test -InitiatorIds "IQN:...","IQN:..."

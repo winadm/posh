@@ -1,0 +1,8 @@
+1.Установка компонента AD-DS
+Install-windowsfeature -name AD-Domain-Services –IncludeManagementTools
+
+2.Установка нового леса и домена
+Install-ADDSForest -DomainName "systemgroup.local"
+
+2.1 Добавление второго контроллера домена с днс на борту
+Install-ADDSDomainController -InstallDns -Credential (Get-Credential) -DomainName systemgroup.local
