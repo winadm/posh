@@ -1,0 +1,10 @@
+1. Установка роли dhcp
+Add-WindowsFeature  -IncludeManagementTools dhcp
+
+2. Добавление группы безопасности
+
+netsh dhcp add securitygroups
+restart-service dhcpserver
+
+3. Авторизация dhcp сервера в AD
+Add-DhcpServerInDC  <hostname of the DHCP server>  <IP address of the DHCP server>

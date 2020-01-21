@@ -1,0 +1,2 @@
+﻿$OU = "OU=TPP Work Users and Computers,DC=tpprf,DC=loc"
+Get-ADUser -SearchBase $OU -Properties * -Filter * | Select-Object DisplayName, SamAccountName, info | Sort DisplayName | Out-GridView -Title "Информация по логонам" -Wait

@@ -1,0 +1,52 @@
+
+0. Установка vmware tools
+cd d:
+setup.exe
+
+1. Сеть
+
+вывод всех сетевых интерфейсов по номерам:
+netsh interface ipv4 show interface
+
+Адрес, маска, шлюз
+netsh interface ipv4 set address name="12" source=static address=192.168.1.1 mask=255.255.255.0 gateway=192.168.1.1
+
+DNS. Добавление вторичных днс повторной командой, иначе использовать "index=1"
+netsh interface ipv4 add dnsserver name="12" address=192.168.1.1
+netsh interface ipv4 add dnsserver name="12" address=192.168.1.1 index=2
+
+2. Ввод в домен
+
+Имя компьютера
+hostname
+
+Переименование компьютера
+netdom renamecomputer WIN-KMTUYKKZPJQ /newname:servercore-1
+
+ввод в домен
+netdom join WIN-KMTUYKKZPJQ /domain:wiredbraincoffee.com /userd:administrator /passwordd:*
+
+
+3. Временная зона
+control timedate.cpl
+
+4. Открыть rdp
+
+cscript C:\windows\system32\scregedit.wsf /ar 0
+
+5. Активация
+
+прокся
+netsh winhttp set proxy b000168.zaoeps.local:3128
+
+Активация
+cd %windir%
+slmgr.vbs /ato
+
+6. язык и региональные настройки
+
+Региональные настройки
+control intl.cpl
+
+Смена раскладки
+"C:\Windows\system32\rundll32.exe" Shell32.dll,Control_RunDLL input.dll,,{C07337D3-DB2C-4D0B-9A93-B722A6C106E2}

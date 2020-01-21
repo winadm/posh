@@ -1,0 +1,23 @@
+cls
+$180_Days = (Get-Date).adddays(-180)
+$enableUsers = Get-ADuser -SearchBase  ‘OU=TPP Work Users and Computers,DC=TPPRF,DC=loc’ -Filter {enabled -eq $true} -Properties PasswordLastSet, LastLogonDate
+$enableUsers | ForEach-Object {
+  if ($_.passwordlastset -le $180_days)
+      {
+    if (($_.LastLogonDate -le $180_days) -and ($_.LastLogonDate -ne $null))
+      {
+      $_.Name + " не логинился более 180 дней (последений логон " + $_.LastLogonDate + ")." 
+      }
+    else
+      {
+      if ($_.LastLogonDate -eq $null)
+        {
+        $_.Name + " не логинился никогда."
+        }
+      else
+        {
+        $_.Name + " не менялся пароль более 180 дней (дата последней смены " + $_.passwordlastset + ")."
+        }
+      }
+    }
+}

@@ -1,0 +1,1 @@
+Add-DhcpServerv4Reservation -ScopeId 10.10.10.0 -IPAddress 10.10.10.8 -ClientId F0-DE-F1-7A-00-5E -Description "Reservation for me"
