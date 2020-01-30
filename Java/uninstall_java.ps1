@@ -1,5 +1,5 @@
 # PowerShell скрипт для удаления всех версий Java SE (JRE) на компьютере
-# Подробности в статье на https://winitpro.ru/
+# Подробности в статье  https://winitpro.ru/index.php/2020/01/30/proverit-versiyu-obnovit-udalit-java-iz-powershell/
 
 $uninstall32 = gci "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -like "*Java*" } | select UninstallString
 $uninstall64 = gci "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" | foreach { gp $_.PSPath } | ? { $_ -like "*Java*" } | select UninstallString

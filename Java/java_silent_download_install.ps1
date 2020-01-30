@@ -1,5 +1,5 @@
 # PowerShell скрипт для автоматической загрузки и установки последней версии  Java SE (JRE) на компьютере
-# Подробности в статье на https://winitpro.ru/
+# Подробности в статье https://winitpro.ru/index.php/2020/01/30/proverit-versiyu-obnovit-udalit-java-iz-powershell/
 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 # скачать онлайн установщик Java

@@ -1,5 +1,5 @@
 # PowerShell скрипт для проверки верси Java SE (JRE) на удаленных компьютерах/серверах
-# Подробности в статье на https://winitpro.ru/
+# Подробности в статье https://winitpro.ru/index.php/2020/01/30/proverit-versiyu-obnovit-udalit-java-iz-powershell/
 
 # Проверить версию Java по списку компьютеров
 # $computers = @('sever1,server2,server3')
