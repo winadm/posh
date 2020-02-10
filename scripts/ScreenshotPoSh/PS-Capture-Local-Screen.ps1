@@ -1,3 +1,6 @@
+# получить скриншот с помощью powershell
+# падробности https://winitpro.ru/index.php/2020/02/10/powershell-poluchit-skrinshot-rabochego-stola-polzovatelya/
+
 $Path = "C:\ps\screenshots"
 # Проверяем, что каталог для хранения скриншотов создан, если нет - создаем его
 If (!(test-path $path)) {
