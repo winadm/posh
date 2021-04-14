@@ -1,5 +1,6 @@
 ## PowerShell
-## Active Directory Replication Health Check Script 
+## Active Directory Replication Health Check Script
+## Script uses repadmin to generate HTML report and sends it to e-mail 
 
 
 #Variables
