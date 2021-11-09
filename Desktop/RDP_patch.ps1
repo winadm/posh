@@ -1,4 +1,4 @@
-# PowerShell скрипт модифицирует файл termsrv.dll, разрешая множественные RDP подключения к рабочим станциям на базе Windows 10 и Windows 11
+# PowerShell скрипт модифицирует файл termsrv.dll, разрешая множественные RDP подключения к рабочим станциям на базе Windows 10 (1809 и выше) и Windows 11
 # Подробности https://winitpro.ru/index.php/2015/09/02/neskolko-rdp-sessij-v-windows-10/
 
 
