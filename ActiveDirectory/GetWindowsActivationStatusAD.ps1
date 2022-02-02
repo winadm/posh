@@ -25,7 +25,7 @@ If ((Test-NetConnection $comp.name -WarningAction SilentlyContinue).PingSucceede
 else {
     $objReport = [PSCustomObject]@{
      ComputerName = $comp.name
-     LicenseStatus = "Unavailable"
+     LicenseStatus = "Offline"
       }
 }
 $Report += $objReport
