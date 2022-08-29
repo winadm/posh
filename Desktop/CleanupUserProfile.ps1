@@ -3,7 +3,7 @@
 # Оптимально для запуска через логофф скрипт GPO или через планировщик Task Sheduler  
 # Можно использовать на RDS хостах, VDI или рабочих станциях для очистки профилей пользователей
 # Рекомендуем сначала протестировать работу скрипта в вашем окружении, и после этого удалить опцию WhatIf для физического удаления файлов
-# Более подробное описание здесь: 
+# Более подробное описание здесь: https://winitpro.ru/index.php/2022/08/29/ochistka-temp-cache-failov-v-profile-polzovatelya/
 
 $Logfile = "$env:USERPROFILE\cleanup_profile_script.log"
 $OldFilesData = (get-date).adddays(-14)
