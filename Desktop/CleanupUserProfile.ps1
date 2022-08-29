@@ -19,8 +19,7 @@ $OldFilesData = (get-date).adddays(-14)
   #'AppData\Local\Google\Chrome\User Data\Default\Cache2\entries',
   #'AppData\Local\Google\Chrome\User Data\Default\Cookies',
   #'AppData\Local\Google\Chrome\User Data\Default\Media Cache',
-  #'\ppData\Local\Google\Chrome\User Data\Default\Cookies-Journal',
-  #''
+  #'AppData\Local\Google\Chrome\User Data\Default\Cookies-Journal'
   )
 # Каталоги, в которых удаляются только старые файлы
   [array] $clear_old_paths = (
@@ -62,7 +61,3 @@ ForEach ($path_old In $clear_old_paths)
     }
 }
 WriteLog "End profile cleanup script"
-
-
-
-
