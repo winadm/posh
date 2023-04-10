@@ -1,16 +1,19 @@
 # Скрипт (https://github.com/winadm/posh/blob/master/Desktop/CleanupUserProfile.ps1) изменен для удаления файлов в папке Windows\Temp
-
+# Be carefull to use in your production environment without testing!
+# there is NO -whatIf function!!!
 
 $Logfile = "$env:USERPROFILE\cleanup_script.log"
 $OldFilesData = (get-date).adddays(-14)
 
 # Полная очистка каталогов с кэшем
+# Full catalogues cleanup
 [array] $clear_paths = (
   'AppData\Local\Temp',
   'AppData\Local\Microsoft\Windows\AppCache',
   'AppData\Local\CrashDumps'
   )
 # Каталоги, в папке Windows(!!!) ВНИМАТЕЛЬНО ТУДА ДОБАВЛЯЕМ ИЛИ НЕ ДОБАВЛЯЕМ.
+# This array contains paths in Windows folder!!! Such as Windows\Temp
   [array] $clear_Win_paths = (
     'Temp'
 	
@@ -25,6 +28,7 @@ Add-content $LogFile -value $LogMessage
 }
 
 # очистка каталогов с кэшем
+# Folder cleanup with cache
 ForEach ($path In $clear_paths)
 {
     If ((Test-Path -Path "$env:USERPROFILE\$path") -eq $true)
@@ -34,6 +38,7 @@ ForEach ($path In $clear_paths)
     }
 }
 # удаление старых файлов 
+# Old files cleanup
 ForEach ($path_w In $clear_Win_paths)
 {
     If ((Test-Path -Path "$env:SystemRoot\$path_w") -eq $true)
