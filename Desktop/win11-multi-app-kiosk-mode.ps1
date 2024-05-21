@@ -1,5 +1,5 @@
 # PowerShell скрипт для включения режима киоска с возможностью запуска нескольких приложений в Windows 11
-# подробнее здесь ссылка на URL статьи
+# подробнее здесь https://winitpro.ru/index.php/2024/05/21/vkluchit-rezhim-kioska-windows/
 
 $MultiKioskModeConfig= @"
 <?xml version="1.0" encoding="utf-8" ?>
@@ -43,3 +43,11 @@ $className="MDM_AssignedAccess"
 $obj = Get-CimInstance -Namespace $namespaceName -ClassName $className
 $obj.Configuration = [System.Net.WebUtility]::HtmlEncode($MultiKioskModeConfig)
 Set-CimInstance -CimInstance $obj
+
+
+# Отключить и очистить режим киоска Windows 11 с несколькими приложениями
+# $obj  = Get-CimInstance -Namespace "root\cimv2\mdm\dmmap" -ClassName "MDM_AssignedAccess"
+# $obj.Configuration = $NULL
+# Set-CimInstance -CimInstance $obj
+
+
