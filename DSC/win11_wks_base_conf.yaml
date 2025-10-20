@@ -1,6 +1,6 @@
 
 # пример  YAML файла, демонстрирующий применение DSC конфигурации через winget config
-# TBD ссылка на статью https://winitpro.ru/
+# TBD ссылка на статью https://winitpro.ru/index.php/2025/10/20/winget-dsc-configure/
 # yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
 properties:
   configurationVersion: 0.2.0  
