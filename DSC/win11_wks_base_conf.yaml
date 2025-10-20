@@ -1,0 +1,67 @@
+
+# пример  YAML файла, демонстрирующий применение DSC конфигурации через winget config
+# TBD ссылка на статью https://winitpro.ru/
+# yaml-language-server: $schema=https://aka.ms/configuration-dsc-schema/0.2
+properties:
+  configurationVersion: 0.2.0  
+  resources:
+    - resource: Microsoft.Windows.Developer/DeveloperMode
+      id: enable-devmode
+      directives:
+        description: Enable Developer Mode
+        allowPrerelease: true
+        securityContext: elevated
+      settings:
+        Ensure: Present
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Mozilla.Firefox
+      directives:
+        description: Installing Mozilla Firefox
+        allowPrerelease: false
+        securityContext: current
+      settings:
+        id: "Mozilla.Firefox"
+        source: winget     
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: NotepadPlusPlus
+      directives:
+        description: Install Notepad++
+        allowPrerelease: false
+        securityContext: current
+      settings:
+        id: "Notepad++.Notepad++"
+        source: winget     
+
+    - resource: Registry
+      id: EnableRegBackup
+      directives:
+        description: Enable auto registry backup
+        securityContext: elevated
+      settings:
+        Key: 'HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Session Manager\Configuration Manager'
+        ValueName: 'EnablePeriodicBackup'
+        ValueData: 1
+        ValueType: Dword
+        Ensure: Present
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: PowerToys
+      directives:
+        description: Install PowerToys
+        allowPrerelease: false
+        securityContext: current
+      settings:
+        id: "XP89DCGQ3K6VLD"
+        source: msstore
+
+    - resource: Microsoft.WinGet.DSC/WinGetPackage
+      id: Remove7Zip
+      directives:
+        description: Remove 7Zip
+        allowPrerelease: true
+        securityContext: elevated
+      settings:
+        id: 7zip.7zip
+        ensure: absent
