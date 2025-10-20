@@ -45,7 +45,8 @@ properties:
         ValueData: 1
         ValueType: Dword
         Ensure: Present
-
+        Force: true
+        
     - resource: Microsoft.WinGet.DSC/WinGetPackage
       id: PowerToys
       directives:
