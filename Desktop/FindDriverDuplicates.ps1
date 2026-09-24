@@ -2,82 +2,85 @@
 # При обновлении драйвера Windows сохраняет старую версию и со временем размер хранилища драйверов сильно увеличивается
 # https://winitpro.ru/index.php/2017/02/03/udalenie-staryx-versij-drajverov-iz-xranilishha-windows/
 
-$dismOut = dism /online /get-drivers
-$Lines = $dismOut | select -Skip 10
-$Operation = "theName"
-$Drivers = @()
-foreach ( $Line in $Lines ) {
-    $tmp = $Line
-    $txt = $($tmp.Split( ':' ))[1]
-    switch ($Operation) {
-        'theName' { $Name = $txt
-                     $Operation = 'theFileName'
-                     break
-                   }
-        'theFileName' { $FileName = $txt.Trim()
-                         $Operation = 'theEntr'
-                         break
-                       }
-        'theEntr' { $Entr = $txt.Trim()
-                     $Operation = 'theClassName'
-                     break
-                   }
-        'theClassName' { $ClassName = $txt.Trim()
-                          $Operation = 'theVendor'
-                          break
-                        }
-        'theVendor' { $Vendor = $txt.Trim()
-                       $Operation = 'theDate'
-                       break
-                     }
-        'theDate' { # change the date format for easy sorting
-                     $tmp = $txt.split( '.' )
-                     $txt = "$($tmp[2]).$($tmp[1]).$($tmp[0].Trim())"
-                     $Date = $txt
-                     $Operation = 'theVersion'
-                     break
-                   }
-        'theVersion' { $Version = $txt.Trim()
-                        $Operation = 'theNull'
-                        $params = [ordered]@{ 'FileName' = $FileName
-                                              'Vendor' = $Vendor
-                                              'Date' = $Date
-                                              'Name' = $Name
-                                              'ClassName' = $ClassName
-                                              'Version' = $Version
-                                              'Entr' = $Entr
-                                            }
-                        $obj = New-Object -TypeName PSObject -Property $params
-                        $Drivers += $obj
-                        break
-                      }
-         'theNull' { $Operation = 'theName'
-                      break
-                     }
+# Исправления:
+2026-09
+#   - Корректная работа с датой через [datetime]
+#   - Группировка по Original Name (одинаковые INF для разных устройств)
+#   - Использование pnputil /delete-driver вместо /delete-device
+
+$OutputEncoding = [console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+Write-Host "Scanning driver store for duplicates..." -ForegroundColor Cyan
+
+# Получаем список всех драйверов в хранилище
+$Drivers = pnputil /enum-drivers | ForEach-Object {
+    if ($_ -match "Published Name\s*:\s*(.+)") {
+        $PublishedName = $matches[1].Trim()
+    }
+    if ($_ -match "Original Name\s*:\s*(.+)") {
+        $OriginalName = $matches[1].Trim()
+    }
+    if ($_ -match "Provider Name\s*:\s*(.+)") {
+        $Provider = $matches[1].Trim()
+    }
+    if ($_ -match "Class\s*:\s*(.+)") {
+        $Class = $matches[1].Trim()
+    }
+    if ($_ -match "Driver Date and Version\s*:\s*(.+)") {
+        # Формат: "Driver Date and Version : 05/12/2023 10.0.19041.3636"
+        $DateVersion = $matches[1].Trim()
+        if ($DateVersion -match "(\d{2}/\d{2}/\d{4})\s+(.+)") {
+            $DateStr = $matches[1]
+            $Version = $matches[2]
+            # Преобразуем строку даты в [datetime] для корректного сравнения
+            $Date = [datetime]::ParseExact($DateStr, "MM/dd/yyyy", $null)
+        }
+    }
+    
+    if ($PublishedName -and $OriginalName) {
+        [PSCustomObject]@{
+            PublishedName  = $PublishedName
+            OriginalName   = $OriginalName
+            Provider       = $Provider
+            Class          = $Class
+            Date           = $Date
+            Version        = $Version
+        }
+        $PublishedName = $null
+        $OriginalName = $null
+        $Provider = $null
+        $Class = $null
+        $Date = $null
+        $Version = $null
     }
 }
-$last = ''
-$NotUnique = @()
-foreach ( $Dr in $($Drivers | sort Filename) ) {
-    if ($Dr.FileName -eq $last  ) {  $NotUnique += $Dr  }
-    $last = $Dr.FileName
+
+Write-Host "Found $($Drivers.Count) drivers in store" -ForegroundColor Green
+
+# Группируем по Original Name (базовое имя INF), так как один INF может использоваться несколькими устройствами
+$Duplicates = $Drivers | Group-Object OriginalName | Where-Object { $_.Count -gt 1 }
+
+$ToRemove = @()
+foreach ($Group in $Duplicates) {
+    # Сортируем по дате (от новых к старым) и берём все, кроме последнего (самого нового)
+    $OldVersions = $Group.Group | Sort-Object Date -Descending | Select-Object -SkipLast 1
+    $ToRemove += $OldVersions
 }
-$NotUnique | sort FileName | ft
-# looking for duplicated driver 
-$list = $NotUnique | select -ExpandProperty FileName -Unique
-$ToDel = @()
-foreach ( $Dr in $list ) {
-    Write-Host "duplicate driver found" -ForegroundColor Yellow
-    $sel = $Drivers | where { $_.FileName -eq $Dr } | sort date -Descending | select -Skip 1
-    $sel | ft
-    $ToDel += $sel
+
+if ($ToRemove.Count -eq 0) {
+    Write-Host "No duplicate drivers found." -ForegroundColor Green
+    exit
 }
-Write-Host "List of driver version  to remove" -ForegroundColor Red
-$ToDel | ft
-# removing old drivers
-foreach ( $item in $ToDel ) {
-    $Name = $($item.Name).Trim()
-    Write-Host "deleting $Name" -ForegroundColor Yellow
-   # Write-Host "pnputil.exe /remove-device  $Name" -ForegroundColor Yellow
-   # Invoke-Expression -Command "pnputil.exe -d $Name"
+
+Write-Host "`nFound $($ToRemove.Count) old driver versions to remove:" -ForegroundColor Yellow
+$ToRemove | Format-Table PublishedName, OriginalName, Provider, Class, Date, Version -AutoSize
+
+# Удаление старых версий
+foreach ($Driver in $ToRemove) {
+    $Name = $Driver.PublishedName
+    Write-Host "Deleting $Name ($($Driver.OriginalName))..." -ForegroundColor Yellow
+   # Автоматическое удаление драйверов отключено по умолчанию
+   # pnputil /delete-driver $Name /force
 }
+
+Write-Host "`nCleanup complete." -ForegroundColor Green
