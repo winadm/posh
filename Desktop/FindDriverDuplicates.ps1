@@ -3,7 +3,7 @@
 # https://winitpro.ru/index.php/2017/02/03/udalenie-staryx-versij-drajverov-iz-xranilishha-windows/
 
 # Исправления:
-2026-09
+# 2026-09
 #   - Корректная работа с датой через [datetime]
 #   - Группировка по Original Name (одинаковые INF для разных устройств)
 #   - Использование pnputil /delete-driver вместо /delete-device
