@@ -21,6 +21,8 @@ $dll_as_text_replaced = $dll_as_text -replace $patternregex, $patch
 }
 Elseif (Select-String -Pattern $patch -InputObject $dll_as_text) {
 Write-Output 'The termsrv.dll file is already patch, exitting'
+Start-Service UmRdpService
+Start-Service TermService
 Exit
 }
 else { 
