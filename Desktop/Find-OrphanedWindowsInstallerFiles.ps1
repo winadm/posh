@@ -1,4 +1,3 @@
-
 <#
 .SYNOPSIS
     Поиск потерянных (orphaned) MSI/MSP файлов в C:\Windows\Installer.
@@ -24,9 +23,6 @@
     C:\Windows\Installer является системной папкой Windows Installer.
     Не удаляйте файлы без предварительной проверки отчёта.
 #>
-
-#Requires -RunAsAdministrator
-
 
 
 #Requires -RunAsAdministrator
